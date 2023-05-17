@@ -3,16 +3,21 @@ import os
 from PySide6.QtCore import QPointF, QSize, Qt, Slot
 from PySide6.QtGui import QPainter, QPixmap, QPen
 from PySide6.QtWidgets import (
-    QFrame, QVBoxLayout, QHBoxLayout, 
-    QPushButton, QProgressBar
+    QFrame, QVBoxLayout, QHBoxLayout, QProgressBar
 )
 from PySide6.QtCharts import (
     QBarCategoryAxis, QBarSeries, QBarSet, QPieSeries,
     QChart, QChartView, QScatterSeries, QLineSeries, QValueAxis
 )
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
 from .visualizethread import VisThread
 from ..common_widgets import Frame, PushButton
 from ..signals import vis_signals
+
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 
 class Visualization(QFrame):
@@ -29,8 +34,19 @@ class Visualization(QFrame):
 
         self.frame_layout = QHBoxLayout()
         self.frame_cam = Frame("Cam1")
-        self.frame_cam.setFixedSize(QSize(720, 540))
+        self.frame_cam.setFixedSize(QSize(720, 520))
+        self.fig, self.ax = plt.subplots()
+        # self.ax.axis("off")
+        self.ax.add_patch(
+            patches.Rectangle(
+                (5, 5), 100, 100, edgecolor='black', fill=True
+            )
+        )
+        self.ax.text(1.5, 3.5, 'Max of Data B')
+        self.minimap = FigureCanvas(self.fig)
+
         self.frame_layout.addWidget(self.frame_cam)
+        self.frame_layout.addWidget(self.minimap)
         self.dashboard_layout.addLayout(self.frame_layout)
 
         self.middle_layout = QHBoxLayout()
@@ -53,7 +69,7 @@ class Visualization(QFrame):
         self.chart_visitor.setAnimationOptions(QChart.SeriesAnimations)
 
         self.chart_view_visitor = QChartView(self.chart_visitor)        
-        self.chart_view_visitor.setFixedSize(QSize(420, 420))
+        self.chart_view_visitor.setFixedSize(QSize(430, 430))
         self.chart_view_visitor.setRenderHint(QPainter.Antialiasing)
         self.bottom_layout.addWidget(self.chart_view_visitor)
         
@@ -63,7 +79,7 @@ class Visualization(QFrame):
         self.chart_age.setAnimationOptions(QChart.SeriesAnimations)
 
         self.chart_view_age = QChartView(self.chart_age)
-        self.chart_view_age.setFixedSize(QSize(420, 420))
+        self.chart_view_age.setFixedSize(QSize(430, 430))
         self.chart_view_age.setRenderHint(QPainter.Antialiasing)
         self.bottom_layout.addWidget(self.chart_view_age)
 
@@ -73,7 +89,7 @@ class Visualization(QFrame):
         self.chart_gender.setAnimationOptions(QChart.SeriesAnimations)
 
         self.chart_view_gender = QChartView(self.chart_gender)
-        self.chart_view_gender.setFixedSize(QSize(420, 420))
+        self.chart_view_gender.setFixedSize(QSize(430, 430))
         self.chart_view_gender.setRenderHint(QPainter.Antialiasing)
         self.bottom_layout.addWidget(self.chart_view_gender)
         
@@ -173,3 +189,11 @@ class Visualization(QFrame):
         self.chart_gender.createDefaultAxes()
         self.chart_view_gender.update()
 
+
+class MinimapCanvas(FigureCanvas):
+    def __init__(self):
+        super().__init__()
+
+    @Slot(bool)
+    def plot(self, value):
+        pass
