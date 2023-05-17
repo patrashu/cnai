@@ -28,7 +28,7 @@ class VisThread(QThread):
                 
                 h, w, ch = res.shape
                 res = QImage(res, w, h, ch * w, QImage.Format_RGB888)
-                res = res.scaled(640, 480, Qt.KeepAspectRatio)
+                res = res.scaled(720, 540, Qt.KeepAspectRatio)
 
                 vis_signals.streaming_vis.emit(res)
                 self.cnt += 1

@@ -15,8 +15,11 @@ RESOLUTION = 4
 class StreamingCam(QFrame):
     def __init__(self) -> None:
         super().__init__()
-
+        self.setFrameShape(QFrame.NoFrame)
+        self.setFrameShadow(QFrame.Raised)
+        self.setContentsMargins(0, 0, 0, 0)
         self.setStyleSheet("background-color: #1e1e1e;") 
+        
         self.device = None
         self.config = None
         self.color_control = None

@@ -18,7 +18,11 @@ class StreamingVideo(QFrame):
     def __init__(self) -> None:
         super().__init__()
 
+        self.setFrameShape(QFrame.NoFrame)
+        self.setFrameShadow(QFrame.Raised)
+        self.setContentsMargins(0, 0, 0, 0)
         self.setStyleSheet("background-color: #1e1e1e;") 
+        
         self.root_path = '/'.join(os.path.abspath('assets/').split('\\')[:-1])
         self.device = None
         self.config = None

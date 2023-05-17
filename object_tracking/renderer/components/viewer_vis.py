@@ -18,30 +18,31 @@ from ..signals import vis_signals
 class Visualization(QFrame):
     def __init__(self) -> None:
         super().__init__()
-
+        self.setFrameShape(QFrame.NoFrame)
+        self.setFrameShadow(QFrame.Raised)
+        self.setContentsMargins(0, 0, 0, 0)
+        
         self.root_path = '/'.join(os.path.abspath('assets/').split('\\')[:-1])
         self.setStyleSheet("background-color: #1e1e1e;") 
         self.dashboard_layout = QVBoxLayout()
+        self.dashboard_layout.setAlignment(Qt.AlignCenter | Qt.AlignTop)
 
-        self.top_layout = QHBoxLayout()
-        self.top_layout.setAlignment(Qt.AlignLeft)
-
+        self.frame_layout = QHBoxLayout()
         self.frame_cam = Frame("Cam1")
-        self.frame_cam.setFixedSize(QSize(640, 480))
-        self.top_layout.addWidget(self.frame_cam)
+        self.frame_cam.setFixedSize(QSize(720, 540))
+        self.frame_layout.addWidget(self.frame_cam)
+        self.dashboard_layout.addLayout(self.frame_layout)
 
-        self.btn_progress_layout = QVBoxLayout()
-        self.btn_progress_layout.setAlignment(Qt.AlignHCenter)
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setFixedSize(500, 50)
-        self.total_frame = None
+        self.middle_layout = QHBoxLayout()
         self.btn_start = PushButton("Start")
-        self.btn_start.setFixedSize(150, 40)
+        self.btn_start.setFixedSize(250, 40)
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setFixedSize(1000, 40)
+        self.total_frame = None
 
-        self.btn_progress_layout.addWidget(self.progress_bar)
-        self.btn_progress_layout.addWidget(self.btn_start)
-        self.top_layout.addLayout(self.btn_progress_layout)
-        self.dashboard_layout.addLayout(self.top_layout)
+        self.middle_layout.addWidget(self.btn_start)
+        self.middle_layout.addWidget(self.progress_bar)
+        self.dashboard_layout.addLayout(self.middle_layout)
 
         self.bottom_layout = QHBoxLayout()
         self.bottom_layout.setAlignment(Qt.AlignLeft)
@@ -57,7 +58,7 @@ class Visualization(QFrame):
         self.chart_visitor.setAnimationOptions(QChart.SeriesAnimations)
 
         self.chart_view_visitor = QChartView(self.chart_visitor)        
-        self.chart_view_visitor.setFixedSize(QSize(440, 440))
+        self.chart_view_visitor.setFixedSize(QSize(420, 420))
         self.chart_view_visitor.setRenderHint(QPainter.Antialiasing)
         self.bottom_layout.addWidget(self.chart_view_visitor)
         
@@ -85,7 +86,7 @@ class Visualization(QFrame):
         self.chart_age.legend().setAlignment(Qt.AlignBottom)
 
         self.chart_view_age = QChartView(self.chart_age)
-        self.chart_view_age.setFixedSize(QSize(440, 440))
+        self.chart_view_age.setFixedSize(QSize(420, 420))
         self.chart_view_age.setRenderHint(QPainter.Antialiasing)
         self.bottom_layout.addWidget(self.chart_view_age)
 
@@ -102,7 +103,7 @@ class Visualization(QFrame):
         self.chart_gender.setAnimationOptions(QChart.SeriesAnimations)
 
         self.chart_view_gender = QChartView(self.chart_gender)
-        self.chart_view_gender.setFixedSize(QSize(440, 440))
+        self.chart_view_gender.setFixedSize(QSize(420, 420))
         self.chart_view_gender.setRenderHint(QPainter.Antialiasing)
         self.bottom_layout.addWidget(self.chart_view_gender)
         

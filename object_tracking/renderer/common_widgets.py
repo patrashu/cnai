@@ -141,6 +141,10 @@ class Frame(QFrame):
         layout: Union[QVBoxLayout, QHBoxLayout] = None,
     ) -> None:
         super().__init__()
+        self.setFrameShape(QFrame.NoFrame)
+        self.setFrameShadow(QFrame.Raised)
+        self.setContentsMargins(0, 0, 0, 0)
+        
         self.setMaximumHeight(480)
         self.setFixedWidth(640)
         self.setObjectName("Frame")

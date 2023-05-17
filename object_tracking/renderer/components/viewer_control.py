@@ -13,9 +13,12 @@ class StackedViewer(QFrame):
     def __init__(self) -> None:
         super().__init__()
         all_signals.stacked_sidebar_status.connect(self.setCurrentWidget)
-
+        self.setFrameShape(QFrame.NoFrame)
+        self.setFrameShadow(QFrame.Raised)
+        self.setContentsMargins(0, 0, 0, 0)
         self.setMaximumHeight(1080)
         self.setMaximumWidth(1900)
+        
         self.main_layout = QStackedLayout()
         self.viewer_video = StreamingVideo()
         self.viewer_cam = StreamingCam()
