@@ -1,14 +1,14 @@
 
 import os
 from PySide6.QtCore import QPointF, QSize, Qt, Slot
-from PySide6.QtGui import QPainter, QPixmap
+from PySide6.QtGui import QPainter, QPixmap, QPen
 from PySide6.QtWidgets import (
     QFrame, QVBoxLayout, QHBoxLayout, 
     QPushButton, QProgressBar
 )
 from PySide6.QtCharts import (
     QBarCategoryAxis, QBarSeries, QBarSet, QPieSeries,
-    QChart, QChartView, QValueAxis, QLineSeries
+    QChart, QChartView, QScatterSeries, QLineSeries, QValueAxis
 )
 from .visualizethread import VisThread
 from ..common_widgets import Frame, PushButton
@@ -48,13 +48,8 @@ class Visualization(QFrame):
         self.bottom_layout.setAlignment(Qt.AlignLeft)
 
         # Visitor Graph
-        self.series_floating = QLineSeries()
-        self.series_visitor = QLineSeries()
         self.chart_visitor = QChart()
-        self.chart_visitor.addSeries(self.series_floating)
-        self.chart_visitor.addSeries(self.series_visitor)
-        self.chart_visitor.createDefaultAxes()
-        self.chart_visitor.setTitle("Visitor and Floating Population")
+        self.chart_visitor.setTitle("Visitor Population")
         self.chart_visitor.setAnimationOptions(QChart.SeriesAnimations)
 
         self.chart_view_visitor = QChartView(self.chart_visitor)        
@@ -63,27 +58,9 @@ class Visualization(QFrame):
         self.bottom_layout.addWidget(self.chart_view_visitor)
         
         # Age Graph
-        self.bar_age = QBarSet("Person")
-        self.series_age = QBarSeries()
-        self.series_age.append(self.bar_age)
-        
         self.chart_age = QChart()
-        self.chart_age.addSeries(self.series_age)
         self.chart_age.setTitle("Age Bar Chart")
         self.chart_age.setAnimationOptions(QChart.SeriesAnimations)
-
-        self.categories_age = ['0', '10', '20', '30', '40', '50', '60', '70', '80']
-        self.chart_age_axis_x = QBarCategoryAxis()
-        self.chart_age_axis_x.append(self.categories_age)
-        self.chart_age.addAxis(self.chart_age_axis_x, Qt.AlignBottom)
-        self.series_age.attachAxis(self.chart_age_axis_x)
-
-        self.chart_age_axis_y = QValueAxis()
-        self.chart_age.addAxis(self.chart_age_axis_y, Qt.AlignLeft)
-        self.series_age.attachAxis(self.chart_age_axis_y)
-
-        self.chart_age.legend().setVisible(True)
-        self.chart_age.legend().setAlignment(Qt.AlignBottom)
 
         self.chart_view_age = QChartView(self.chart_age)
         self.chart_view_age.setFixedSize(QSize(420, 420))
@@ -91,14 +68,7 @@ class Visualization(QFrame):
         self.bottom_layout.addWidget(self.chart_view_age)
 
         # Gender Graph
-        self.sum_gender = []
-        self.series_gender = QPieSeries()
-        # self.chart_gender_slice = self.series_gender.slices()[0]
-        # self.chart_gender_slice.setExploded()
-        # self.chart_gender_slice.setLabelVisible()
-
         self.chart_gender = QChart()
-        self.chart_gender.addSeries(self.series_gender)
         self.chart_gender.setTitle("Gender Chart")
         self.chart_gender.setAnimationOptions(QChart.SeriesAnimations)
 
@@ -115,6 +85,7 @@ class Visualization(QFrame):
         vis_signals.TotalFrame.connect(self.progressStart)
         vis_signals.Complete.connect(self.setDashBoard)
         vis_signals.CurrentFrame.connect(self.progressChange)
+        self.setDashBoard(True)
 
     def openCam(self):
         self.th1 = VisThread(path=os.path.join(self.root_path, "object_tracking/assets/ch03_cut.mp4"))
@@ -137,16 +108,68 @@ class Visualization(QFrame):
 
     @Slot(bool)
     def setDashBoard(self, value):
-        pass
-
         ## Line Chart
+        series_visitor = QLineSeries()
+        series_scatter = QScatterSeries()
+        series_scatter.setMarkerSize(7.0)
+        pts = [
+            (1, 10), (2, 15), (3, 17), (4, 10),
+            (5, 14), (6, 19), (7, 18), (8, 10)
+        ]
+        max_value = max([x[1] for x in pts])
+        for pt in pts:
+            series_visitor.append(QPointF(*pt))
+            series_scatter.append(*pt)
+        self.chart_visitor.addSeries(series_scatter)
+        self.chart_visitor.addSeries(series_visitor)
 
+        series_scatter.setPen(QPen(Qt.blue, 1))
+        series_visitor.setPen(QPen(Qt.blue, 1))
+        visitor_y_axis = QValueAxis()
+        visitor_y_axis.setRange(0, max_value+5)
+        self.chart_visitor.setAxisY(visitor_y_axis, series_visitor)
 
+        self.categories_visitor = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+        self.chart_visitor_axis_x = QBarCategoryAxis()
+        self.chart_visitor_axis_x.append(self.categories_visitor)
+        self.chart_visitor.setAxisX(self.chart_visitor_axis_x, series_visitor)
+        self.chart_visitor.createDefaultAxes()
+        self.chart_visitor.legend().hide()
+
+        self.chart_view_visitor.update()
 
         ## person bar
-        # self.bar_person.append([])
+        bar_age = QBarSet("Person")
+        bar_age.append([100, 200, 400, 500, 300, 100, 200, 300, 500])
+        series_age = QBarSeries()
+        series_age.append(bar_age)
+        self.chart_age.addSeries(series_age)
+        self.chart_age.createDefaultAxes()
+        self.chart_age.legend().hide()
 
+        self.categories_age = ['0', '10', '20', '30', '40', '50', '60', '70', '80']
+        self.chart_age_axis_x = QBarCategoryAxis()
+        self.chart_age_axis_x.append(self.categories_age)
+        self.chart_age.setAxisX(self.chart_age_axis_x)
+        self.chart_view_age.update()
 
         ## Sum_gender
-        # self.series_gender.append(s[0], s[1])
+        series_gender = QPieSeries()
+        series_gender.append("Man", 60)
+        series_gender.append("Woman", 40)
+        chart_gender_slice = series_gender.slices()[0]
+        chart_gender_slice.setExploded()
+        chart_gender_slice.setLabelVisible()
+        chart_gender_slice.setPen(QPen(Qt.black, 1))
+        chart_gender_slice.setBrush(Qt.darkRed)
+
+        chart_gender_slice = series_gender.slices()[1]
+        chart_gender_slice.setExploded()
+        chart_gender_slice.setLabelVisible()
+        chart_gender_slice.setPen(QPen(Qt.black, 1))
+        chart_gender_slice.setBrush(Qt.darkBlue)
+
+        self.chart_gender.addSeries(series_gender)
+        self.chart_gender.createDefaultAxes()
+        self.chart_view_gender.update()
 
