@@ -12,7 +12,7 @@ class AllSignals(QObject):
     streaming_gender = Signal(QImage)
     # minimap = Signal(QImage)
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -21,6 +21,7 @@ class VisSignals(QObject):
     CurrentFrame = Signal(int)
     streaming_vis = Signal(QImage)
     Complete = Signal(bool)
+    CenterPt = Signal(list)
 
 
 all_signals = AllSignals()

@@ -22,7 +22,8 @@ class VisThread(QThread):
             s, frame = self.cap.read()
 
             if s:
-                res = self.model(frame)
+                frame = cv2.resize(frame, (720, 540))
+                res = self.model.predict_with_track(frame)
                 res = res[0].plot()
                 res = cv2.cvtColor(res, cv2.COLOR_BGR2RGB)
                 

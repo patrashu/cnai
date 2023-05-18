@@ -10,6 +10,7 @@ class CamThread(QThread):
         QThread.__init__(self, parent)
         self.is_run = None
         self.model = YOLO('yolov8n.pt')
+        self.model.to('cuda')
 
     def run(self):
         cap = cv2.VideoCapture(0)
@@ -17,6 +18,7 @@ class CamThread(QThread):
             s, frame = cap.read()
 
             if s:
+                frame = cv2.resize(frame, (640, 480))
                 res = self.model(frame)
                 res = res[0].plot()
                 res = cv2.cvtColor(res, cv2.COLOR_BGR2RGB)

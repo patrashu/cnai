@@ -22,6 +22,7 @@ class StreamingThread(QThread):
         while self.is_run and cap.isOpened():
             s, frame = cap.read()
             if s:
+                frame = cv2.resize(frame, (640, 480))
                 res = self.model(frame)
                 res = res[0].plot()
                 res = cv2.cvtColor(res, cv2.COLOR_BGR2RGB)

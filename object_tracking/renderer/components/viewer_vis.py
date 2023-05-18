@@ -3,7 +3,7 @@ import os
 from PySide6.QtCore import QPointF, QSize, Qt, Slot
 from PySide6.QtGui import QPainter, QPixmap, QPen
 from PySide6.QtWidgets import (
-    QFrame, QVBoxLayout, QHBoxLayout, QProgressBar
+    QFrame, QVBoxLayout, QHBoxLayout, QProgressBar, QPushButton
 )
 from PySide6.QtCharts import (
     QBarCategoryAxis, QBarSeries, QBarSet, QPieSeries,
@@ -12,9 +12,10 @@ from PySide6.QtCharts import (
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from matplotlib.figure import Figure
 
 from .visualizethread import VisThread
-from ..common_widgets import Frame, PushButton
+from ..common_widgets import Frame
 from ..signals import vis_signals
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
@@ -26,6 +27,7 @@ class Visualization(QFrame):
         self.setFrameShape(QFrame.NoFrame)
         self.setFrameShadow(QFrame.Raised)
         self.setContentsMargins(0, 0, 0, 0)
+        self.is_minimap = True
         
         self.root_path = '/'.join(os.path.abspath('assets/').split('\\')[:-1])
         self.setStyleSheet("background-color: #1e1e1e;") 
@@ -35,14 +37,12 @@ class Visualization(QFrame):
         self.frame_layout = QHBoxLayout()
         self.frame_cam = Frame("Cam1")
         self.frame_cam.setFixedSize(QSize(720, 520))
-        self.fig, self.ax = plt.subplots()
-        # self.ax.axis("off")
-        self.ax.add_patch(
-            patches.Rectangle(
-                (5, 5), 100, 100, edgecolor='black', fill=True
-            )
-        )
-        self.ax.text(1.5, 3.5, 'Max of Data B')
+        self.fig = Figure()
+        self.fig.tight_layout()
+        self.ax = self.fig.add_subplot(111)
+        self.ax.set_title("Visitor Movement")
+        self.ax.margins(0)
+        
         self.minimap = FigureCanvas(self.fig)
 
         self.frame_layout.addWidget(self.frame_cam)
@@ -50,7 +50,12 @@ class Visualization(QFrame):
         self.dashboard_layout.addLayout(self.frame_layout)
 
         self.middle_layout = QHBoxLayout()
-        self.btn_start = PushButton("Start")
+        self.btn_start = QPushButton("Start")
+        self.btn_start.setStyleSheet("""
+            QPushButton:hover {
+                border-color: "white";
+            }
+        """)
         self.btn_start.setFixedSize(250, 40)
         self.progress_bar = QProgressBar()
         self.progress_bar.setFixedSize(1000, 40)
@@ -101,10 +106,11 @@ class Visualization(QFrame):
         vis_signals.TotalFrame.connect(self.progressStart)
         vis_signals.Complete.connect(self.setDashBoard)
         vis_signals.CurrentFrame.connect(self.progressChange)
-        self.setDashBoard(True)
+        vis_signals.CenterPt.connect(self.add_circle)
+
 
     def openCam(self):
-        self.th1 = VisThread(path=os.path.join(self.root_path, "object_tracking/assets/ch03_cut.mp4"))
+        self.th1 = VisThread(path=os.path.join(self.root_path, "object_tracking/assets/ch03_cut_Trim.mp4"))
         self.th1.is_run = True
         self.th1.start()
 
@@ -115,12 +121,33 @@ class Visualization(QFrame):
     @Slot(int)
     def progressStart(self, value):
         self.total_frame = value
+        self.ax.cla()
+        self.is_minimap = True
     
     @Slot(int)
     def progressChange(self, value):
         tmp = (value / self.total_frame) * 100
         self.progress_bar.setValue(tmp)
         self.progress_bar.setFormat("%.02f %%" % tmp)
+
+    @Slot(list)
+    def add_circle(self, value):
+        if self.is_minimap:
+            self.ax.axis("off")
+            self.ax.add_patch(
+                patches.Rectangle(
+                    (0, 0), 1, 1, facecolor='red', alpha=0.2
+                )
+            )
+            self.is_minimap = False
+
+        self.ax.add_patch(
+            patches.Circle(
+                (int(value[0])/720, 1-int(value[1])/540), radius=0.01
+            )
+        )
+        self.minimap.draw()
+
 
     @Slot(bool)
     def setDashBoard(self, value):
@@ -188,12 +215,3 @@ class Visualization(QFrame):
         self.chart_gender.addSeries(series_gender)
         self.chart_gender.createDefaultAxes()
         self.chart_view_gender.update()
-
-
-class MinimapCanvas(FigureCanvas):
-    def __init__(self):
-        super().__init__()
-
-    @Slot(bool)
-    def plot(self, value):
-        pass
