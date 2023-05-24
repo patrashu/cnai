@@ -1,4 +1,5 @@
 import cv2
+import time
 from ultralytics import YOLO
 
 from PySide6.QtCore import QThread, Qt
@@ -34,6 +35,7 @@ class VisThread(QThread):
                 vis_signals.streaming_vis.emit(res)
                 self.cnt += 1
                 vis_signals.CurrentFrame.emit(self.cnt)
+                time.sleep(0.01)
             else:
                 self.is_run = False        
                 break

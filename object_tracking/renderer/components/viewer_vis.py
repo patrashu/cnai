@@ -121,18 +121,19 @@ class Visualization(QFrame):
     @Slot(int)
     def progressStart(self, value):
         self.total_frame = value
-        self.ax.cla()
-        self.is_minimap = True
     
     @Slot(int)
     def progressChange(self, value):
         tmp = (value / self.total_frame) * 100
         self.progress_bar.setValue(tmp)
         self.progress_bar.setFormat("%.02f %%" % tmp)
+        self.ax.cla()
+        self.is_minimap = True
 
     @Slot(list)
     def add_circle(self, value):
         if self.is_minimap:
+            self.ax.set_title("Visitor Movement")
             self.ax.axis("off")
             self.ax.add_patch(
                 patches.Rectangle(
@@ -143,8 +144,11 @@ class Visualization(QFrame):
 
         self.ax.add_patch(
             patches.Circle(
-                (int(value[0])/720, 1-int(value[1])/540), radius=0.01
+                (int(value[0])/720-0.2, 1-int(value[1])/540+0.2), radius=0.01
             )
+        )
+        self.ax.text(
+            int(value[0])/720-0.17, 1-int(value[1])/540+0.17, value[2]
         )
         self.minimap.draw()
 
