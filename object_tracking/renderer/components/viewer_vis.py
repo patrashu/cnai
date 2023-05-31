@@ -144,11 +144,11 @@ class Visualization(QFrame):
 
         self.ax.add_patch(
             patches.Circle(
-                (int(value[0])/720-0.2, 1-int(value[1])/540+0.2), radius=0.01
+                (int(value[0])/720, 1-int(value[1])/540), radius=0.01
             )
         )
         self.ax.text(
-            int(value[0])/720-0.17, 1-int(value[1])/540+0.17, value[2]
+            int(value[0])/720, 1-int(value[1])/540+0.04, value[2]
         )
         self.minimap.draw()
 

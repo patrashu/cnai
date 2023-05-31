@@ -1,6 +1,6 @@
 import cv2
 from abc import *
-from .ultralytics.ultralytics import YOLO
+from ultralytics import YOLO
 
 from PySide6.QtCore import QThread, Qt
 from PySide6.QtGui import QImage
