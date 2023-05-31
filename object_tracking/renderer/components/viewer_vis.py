@@ -110,7 +110,7 @@ class Visualization(QFrame):
 
 
     def openCam(self):
-        self.th1 = VisThread(path=os.path.join(self.root_path, "object_tracking/assets/ch03_cut_Trim.mp4"))
+        self.th1 = VisThread(path=os.path.join(self.root_path, "object_tracking/assets/test.mp4"))
         self.th1.is_run = True
         self.th1.start()
 
@@ -144,12 +144,12 @@ class Visualization(QFrame):
 
         self.ax.add_patch(
             patches.Circle(
-                (int(value[0])/720, 1-int(value[1])/540), radius=0.01
+                (value[0]/720, 1-value[1]/540), radius=0.01
             )
         )
-        self.ax.text(
-            int(value[0])/720, 1-int(value[1])/540+0.04, value[2]
-        )
+        # self.ax.text(
+        #     value[0]/720, 1-value[1]/540+0.04
+        # )
         self.minimap.draw()
 
 
