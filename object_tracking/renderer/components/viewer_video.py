@@ -1,4 +1,5 @@
 import os
+
 from PySide6.QtCore import Qt, QEvent, QMimeData, Slot
 from PySide6.QtGui import QDrag, QImage, QPixmap
 from PySide6.QtWidgets import (
@@ -74,13 +75,13 @@ class StreamingVideo(QFrame):
     def openCam(self):
         self.btn_open.setEnabled(False)
         self.btn_stop.setEnabled(True)
-        self.th1 = StreamingThread(path=os.path.join(self.root_path, "object_tracking/assets/ch02_cut.mp4"), signal='cam1')
+        self.th1 = StreamingThread(path=os.path.join(self.root_path, "./object_tracking/assets/ch02_cut.mp4"), signal='cam1')
         self.th1.is_run = True
         self.th1.start()
-        self.th2 = StreamingThread(path=os.path.join(self.root_path, "object_tracking/assets/ch03_cut.mp4"), signal='cam2')
+        self.th2 = StreamingThread(path=os.path.join(self.root_path, "./object_tracking/assets/ch03_cut.mp4"), signal='cam2')
         self.th2.is_run = True
         self.th2.start()
-        self.th3 = StreamingThread(path=os.path.join(self.root_path, "object_tracking/assets/ch04_cut.mp4"), signal='cam3')
+        self.th3 = StreamingThread(path=os.path.join(self.root_path, "./object_tracking/assets/ch04_cut.mp4"), signal='cam3')
         self.th3.is_run = True
         self.th3.start()
     

@@ -1,5 +1,6 @@
 import os
 from typing import Tuple, Union, List
+
 from PySide6.QtCore import Qt, QPoint
 from PySide6.QtGui import QFont, QPen, QPainter, QFontMetrics
 
@@ -20,7 +21,6 @@ class ComboBox(QComboBox):
         self.addItems(items)
         self.setCurrentIndex(current_index)
 
-        # TODO: 외부 함수화 또는 PySide6에서 이런 함수 있는지 찾아보셈
         if stylesheet is not None:
             with open(os.path.join(os.path.split(__file__)[0], stylesheet), "r", encoding="utf-8") as f:
                 stylesheet = f.read()

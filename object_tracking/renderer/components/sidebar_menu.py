@@ -1,10 +1,12 @@
 import os
+
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtWidgets import (
     QVBoxLayout, QFrame, QPushButton
 )
 
 import qtawesome as qta
+
 from ..signals import all_signals
 
 class SidebarMenus(QFrame):

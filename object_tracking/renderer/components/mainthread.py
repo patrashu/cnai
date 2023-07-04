@@ -1,9 +1,11 @@
-import cv2
 from abc import *
-from ultralytics import YOLO
+import cv2
 
 from PySide6.QtCore import QThread, Qt
 from PySide6.QtGui import QImage
+
+from ultralytics import YOLO
+
 from ..signals import all_signals
 
 
@@ -11,7 +13,7 @@ class StreamingThread(QThread):
     def __init__(self, parent=None, path=None, signal=None) -> None:
         QThread.__init__(self, parent)
         self.is_run = None
-        self.model = YOLO('yolov8n.pt')
+        self.model = YOLO('./checkpoints/yolov8n.pt')
         self.model.to('cuda')
         self.video_path = path
         self.signal = signal

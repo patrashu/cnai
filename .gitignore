@@ -11,3 +11,5 @@ dist
 pykinect_recorder.egg-info
 *.exe
 assets
+result
+runs

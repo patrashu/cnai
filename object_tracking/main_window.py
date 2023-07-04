@@ -15,7 +15,6 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("RealtimeMonitoring System")
-        self.setWindowIcon(QIcon(os.path.abspath("./renderer/public/kinect-sensor.ico")))
         self.initial_window()
 
     def initial_window(self) -> None:

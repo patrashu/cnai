@@ -25,8 +25,8 @@ class StackedViewer(QFrame):
         self.viewer_vis = Visualization()
         
         self.main_layout.addWidget(self.viewer_video)
-        self.main_layout.addWidget(self.viewer_cam)
         self.main_layout.addWidget(self.viewer_vis)
+        self.main_layout.addWidget(self.viewer_cam)
 
         # 현재 index
         self.main_layout.setCurrentIndex(0)

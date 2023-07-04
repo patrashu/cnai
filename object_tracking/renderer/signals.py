@@ -22,7 +22,7 @@ class VisSignals(QObject):
     streaming_vis = Signal(QImage)
     Complete = Signal(bool)
     CenterPt = Signal(list)
-    ObjectId = Signal(int)
+    ObjectId = Signal(str)
 
 
 all_signals = AllSignals()
