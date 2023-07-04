@@ -1,5 +1,11 @@
 # 2023-1 산학연계 SW캡스톤 디자인 프로젝트- 인공지능 기반 방문자 관리 시스템
 
+![image](https://github.com/patrashu/cnai/assets/49676680/47ed0b55-c2dd-4a5d-8057-89b64be53e14)
+
+- 삼육대학교 산학연계 SW캡스톤 디자인 프로젝트 - 인공지능 기반 방문자 관리 시스템
+- CNAI 기업과 멘토링 [기업  사이트](https://cnai.ai/home)
+- 개발 기간 : 2023/03/10 ~ 2023/06/21
+  
 ## 프로젝트 소개
 
 - 매장 내 CCTV를 기준으로 실시간 방문객을 분석하여 성별, 연령대, 매장 앞 외부 유동인구 등의 정보 수집을 목표
@@ -9,7 +15,7 @@
 ## 데이터셋 소개
 
 - 실제 매장의 24시간 CCTV 4대의 영상(1540x1240)을 사용
-
+- [한국인 재식별 데이터셋](https://www.aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&aihubDataSe=realm&dataSetSn=84) : 성별 & 나이 인식에 사용
 
 ## Get Started
 
@@ -22,6 +28,9 @@ python main.py
 ```
 
 ## 주요 기능
+
+![Screenshot from 2023-06-19 13-23-43](https://github.com/patrashu/cnai/assets/49676680/b7348373-3aaa-4d55-82f2-88739ebe479b)
+![Screenshot from 2023-06-19 14-56-34](https://github.com/patrashu/cnai/assets/49676680/5fb0e765-34cc-4eb1-8730-619254b33902)
 
 - Face Detection
 - Age & Gender Classification
